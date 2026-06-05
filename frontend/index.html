@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Go Live</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="top-bar">
+        <div>
+          <p class="eyebrow">Streamer</p>
+          <h1>Go live</h1>
+        </div>
+        <a class="link-button" href="./viewer.html">Open viewer</a>
+      </section>
+
+      <section class="stream-layout">
+        <div class="video-panel">
+          <video id="preview" autoplay muted playsinline></video>
+          <div class="live-badge" id="liveBadge">Offline</div>
+        </div>
+
+        <aside class="control-panel">
+          <label class="field">
+            <span>Backend server</span>
+            <input
+              id="serverUrl"
+              type="url"
+              autocomplete="off"
+              placeholder="http://YOUR_VM_IP:8080"
+            />
+          </label>
+
+          <div class="button-row">
+            <button id="startButton" type="button">Go live</button>
+            <button id="stopButton" class="secondary" type="button" disabled>Stop</button>
+          </div>
+
+          <dl class="status-list">
+            <div>
+              <dt>Connection</dt>
+              <dd id="connectionStatus">Idle</dd>
+            </div>
+            <div>
+              <dt>Camera</dt>
+              <dd id="cameraStatus">Not requested</dd>
+            </div>
+            <div>
+              <dt>Chunks sent</dt>
+              <dd id="chunksSent">0</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
+    </main>
+
+    <script src="./streamer.js"></script>
+  </body>
+</html>

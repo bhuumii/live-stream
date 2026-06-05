@@ -1,0 +1,15 @@
+[Unit]
+Description=Live Stream WebSocket to HLS Server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ubuntu/live-stream/server
+EnvironmentFile=/home/ubuntu/live-stream/server/.env
+ExecStart=/usr/bin/node src/server.js
+Restart=always
+RestartSec=5
+User=ubuntu
+
+[Install]
+WantedBy=multi-user.target
