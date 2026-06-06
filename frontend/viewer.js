@@ -1,4 +1,4 @@
-const DEFAULT_SERVER_URL = "http://98.86.119.71:8080";
+const DEFAULT_SERVER_URL = "https://xml-theft-roof-therapeutic.trycloudflare.com";
 const SERVER_STORAGE_KEY = "live-stream-server-url";
 
 const player = document.querySelector("#player");
