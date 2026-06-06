@@ -1,4 +1,4 @@
-const DEFAULT_SERVER_URL = "http://localhost:8080";
+const DEFAULT_SERVER_URL = "http://98.86.119.71:8080";
 const SERVER_STORAGE_KEY = "live-stream-server-url";
 const CHUNK_INTERVAL_MS = 250;
 
