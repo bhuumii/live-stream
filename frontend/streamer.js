@@ -1,9 +1,7 @@
-const DEFAULT_SERVER_URL = "https://xml-theft-roof-therapeutic.trycloudflare.com";
-const SERVER_STORAGE_KEY = "live-stream-server-url";
+const DEFAULT_SERVER_URL = "https://98.86.119.71.sslip.io:8080";
 const CHUNK_INTERVAL_MS = 250;
 
 const preview = document.querySelector("#preview");
-const serverUrlInput = document.querySelector("#serverUrl");
 const startButton = document.querySelector("#startButton");
 const stopButton = document.querySelector("#stopButton");
 const connectionStatus = document.querySelector("#connectionStatus");
@@ -16,15 +14,13 @@ let mediaRecorder = null;
 let socket = null;
 let sentChunks = 0;
 
-serverUrlInput.value = localStorage.getItem(SERVER_STORAGE_KEY) || DEFAULT_SERVER_URL;
 
 startButton.addEventListener("click", startStreaming);
 stopButton.addEventListener("click", stopStreaming);
 
 async function startStreaming() {
   try {
-    const serverUrl = normalizeHttpUrl(serverUrlInput.value);
-    localStorage.setItem(SERVER_STORAGE_KEY, serverUrl);
+    const serverUrl = DEFAULT_SERVER_URL;
 
     updateUi({ connection: "Connecting", camera: "Requesting access", live: false });
     startButton.disabled = true;
@@ -140,18 +136,6 @@ function openSocket(url) {
       reject(new Error("Could not connect to the streaming server."));
     });
   });
-}
-
-function normalizeHttpUrl(value) {
-  const trimmed = value.trim().replace(/\/+$/, "");
-  if (!trimmed) throw new Error("Enter the backend server URL.");
-
-  const url = new URL(trimmed);
-  if (!["http:", "https:"].includes(url.protocol)) {
-    throw new Error("Server URL must start with http:// or https://.");
-  }
-
-  return url.toString().replace(/\/+$/, "");
 }
 
 function toWebSocketUrl(serverUrl) {

@@ -1,8 +1,6 @@
-const DEFAULT_SERVER_URL = "https://xml-theft-roof-therapeutic.trycloudflare.com";
-const SERVER_STORAGE_KEY = "live-stream-server-url";
+const DEFAULT_SERVER_URL = "https://98.86.119.71.sslip.io:8080";
 
 const player = document.querySelector("#player");
-const serverUrlInput = document.querySelector("#serverUrl");
 const watchButton = document.querySelector("#watchButton");
 const reloadButton = document.querySelector("#reloadButton");
 const playbackStatus = document.querySelector("#playbackStatus");
@@ -11,15 +9,13 @@ const liveBadge = document.querySelector("#liveBadge");
 
 let hls = null;
 
-serverUrlInput.value = localStorage.getItem(SERVER_STORAGE_KEY) || DEFAULT_SERVER_URL;
 
 watchButton.addEventListener("click", loadStream);
 reloadButton.addEventListener("click", loadStream);
 
 async function loadStream() {
   try {
-    const serverUrl = normalizeHttpUrl(serverUrlInput.value);
-    localStorage.setItem(SERVER_STORAGE_KEY, serverUrl);
+    const serverUrl = DEFAULT_SERVER_URL;
 
     const playlistUrl = `${serverUrl}/hls/output.m3u8?cache=${Date.now()}`;
     playlistUrlLabel.textContent = playlistUrl;
@@ -74,18 +70,6 @@ function destroyHls() {
 
   player.removeAttribute("src");
   player.load();
-}
-
-function normalizeHttpUrl(value) {
-  const trimmed = value.trim().replace(/\/+$/, "");
-  if (!trimmed) throw new Error("Enter the backend server URL.");
-
-  const url = new URL(trimmed);
-  if (!["http:", "https:"].includes(url.protocol)) {
-    throw new Error("Server URL must start with http:// or https://.");
-  }
-
-  return url.toString().replace(/\/+$/, "");
 }
 
 function setLive() {

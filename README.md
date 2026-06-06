@@ -45,16 +45,16 @@ Useful endpoints:
 Open `frontend/index.html` to stream.
 Open `frontend/viewer.html` in another browser tab/device to watch.
 
-Each page has a server URL field. For production, enter your Oracle VM backend URL:
+The frontend uses this production backend URL:
 
 ```text
-http://YOUR_ORACLE_PUBLIC_IP:8080
+https://98.86.119.71.sslip.io:8080
 ```
 
-The streamer page automatically converts this to a WebSocket URL:
+The streamer page automatically converts the backend URL to this WebSocket URL:
 
 ```text
-ws://YOUR_ORACLE_PUBLIC_IP:8080/stream
+wss://98.86.119.71.sslip.io:8080/stream
 ```
 
 ## Deploy Frontend To Vercel
@@ -71,16 +71,16 @@ Open the backend port on the VM and in Oracle Cloud security rules:
 sudo ufw allow 8080/tcp
 ```
 
-If you add HTTPS through Nginx or Caddy, use:
+Production HTTPS is configured through Nginx. Use:
 
 ```text
-https://your-domain.example
+https://98.86.119.71.sslip.io:8080
 ```
 
 The frontend will then use:
 
 ```text
-wss://your-domain.example/stream
+wss://98.86.119.71.sslip.io:8080/stream
 ```
 
 Browsers often require HTTPS pages to connect only to secure `wss://` WebSocket endpoints. For a Vercel production frontend, put your VM behind HTTPS if the browser blocks `ws://` mixed content.
