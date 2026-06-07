@@ -1,11 +1,13 @@
 import cors from "cors";
-import express from "express";
-import { createServer } from "node:http";
-import { mkdir, readdir, rm } from "node:fs/promises";
-import path from "node:path";
+import express, { type Response } from "express";
 import { spawn } from "node:child_process";
+import type { ChildProcessByStdio } from "node:child_process";
+import { mkdir, readdir, rm } from "node:fs/promises";
+import { createServer } from "node:http";
+import path from "node:path";
+import type { Readable, Writable } from "node:stream";
 import { fileURLToPath } from "node:url";
-import { WebSocketServer } from "ws";
+import { WebSocketServer, type WebSocket } from "ws";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,8 +17,15 @@ const port = Number(process.env.PORT || 8080);
 const segmentName = path.join(hlsDir, "segment_%05d.ts");
 const playlistPath = path.join(hlsDir, "output.m3u8");
 
-let activeStream = null;
-let startedAt = null;
+type FfmpegProcess = ChildProcessByStdio<Writable, null, Readable>;
+
+interface ActiveStream {
+  socket: WebSocket;
+  ffmpeg: FfmpegProcess;
+}
+
+let activeStream: ActiveStream | null = null;
+let startedAt: string | null = null;
 
 await mkdir(hlsDir, { recursive: true });
 
@@ -41,7 +50,7 @@ app.use(
   express.static(hlsDir, {
     etag: false,
     lastModified: false,
-    setHeaders(response) {
+    setHeaders(response: Response) {
       response.setHeader("Access-Control-Allow-Origin", process.env.CORS_ORIGIN || "*");
       response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
       response.setHeader("Pragma", "no-cache");
@@ -102,7 +111,7 @@ server.listen(port, "0.0.0.0", () => {
   console.log(`Serving HLS from ${hlsDir}`);
 });
 
-function startFfmpeg() {
+function startFfmpeg(): FfmpegProcess {
   const args = [
     "-hide_banner",
     "-loglevel",
@@ -152,7 +161,7 @@ function startFfmpeg() {
     stdio: ["pipe", "ignore", "pipe"],
   });
 
-  ffmpeg.stderr.on("data", (data) => {
+  ffmpeg.stderr.on("data", (data: Buffer) => {
     console.error(`ffmpeg: ${data.toString().trim()}`);
   });
 
@@ -163,7 +172,7 @@ function startFfmpeg() {
   return ffmpeg;
 }
 
-async function cleanHlsDirectory() {
+async function cleanHlsDirectory(): Promise<void> {
   await mkdir(hlsDir, { recursive: true });
   const entries = await readdir(hlsDir, { withFileTypes: true });
 
@@ -174,7 +183,7 @@ async function cleanHlsDirectory() {
   );
 }
 
-function stopActiveStream(socket) {
+function stopActiveStream(socket: WebSocket): void {
   if (!activeStream || activeStream.socket !== socket) return;
 
   const { ffmpeg } = activeStream;

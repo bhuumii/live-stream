@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
+    "start": "npm run build && node dist/server.js",
+    "dev": "npm run build && node --watch dist/server.js",
+    "build": "tsc -p tsconfig.json && tsc -p ../frontend/tsconfig.json"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -14,5 +15,12 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.2",
+    "@types/ws": "^8.18.1",
+    "typescript": "^6.0.3"
   }
 }
